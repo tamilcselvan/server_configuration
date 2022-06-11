@@ -164,6 +164,9 @@ apt-get install -y memcached
 # enable ssh password authentication
 sed -i 's/^PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config
 
+# restart sshd service
+service sshd restart
+
 # redis-server configuration for php-fpm
 sed -i 's/^;*max-clients.*/max-clients=256/' /etc/redis/redis.conf
 sed -i 's/^;*maxmemory-policy.*/maxmemory-policy=volatile-lru/' /etc/redis/redis.conf
