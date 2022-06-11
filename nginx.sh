@@ -1,20 +1,19 @@
 #!/bin/sh
-sitename=$1
-user=$(echo $sitename | tr '[:upper:]' '[:lower:]' | cut -d. -f1)
+
 # install nginx
-apt-get install nginx
+apt -y install nginx
 
 # firewall rules
 ufw allow 'Nginx Full' # http, https
 ufw allow ssh
 
 # fail2ban install and configuration
-apt-get install fail2ban
+apt -y install fail2ban
 
 service fail2ban start
 
 # install zip and unzip and openssl and webp and imagemagick
-apt-get install zip unzip openssl webp imagemagick
+apt -y install zip unzip openssl webp imagemagick
 
 # enable gzip compression for nginx server and client side (gzip_comp_level=2) (gzip_min_length=1024) (gzip_proxied=any) (gzip_vary=off) (gzip_http_version=1.0) (gzip_types=text/plain application/x-javascript text/css application/xml application/x-httpd-php image/png image/gif image/jpeg image/jpg application/x-javascript application/x-shockwave-flash)
 sed -i 's/^gzip.*/gzip on;/' /etc/nginx/nginx.conf
@@ -114,7 +113,7 @@ service fail2ban restart
 cd ~
 
 # install default php version and its dependencies
-apt-get install -y php php-fpm php-cli php-common php-dev php-gd php-json php-opcache php-readline php-mbstring php-mcrypt php-mysql php-xml php-zip php-curl php-intl php-bz2 php-zip php-bcmath php-soap php-gmp php-pgsql php-sqlite3 php-xdebug php-memcached php-redis php-imagick php-tidy php-pspell php-recode php-snmp php-ssh2 php-gettext php-imap php-gmp php-ldap php-intl php-bz2 php-zip php-bcmath php-soap php-gmp php-pgsql php-sqlite3 php-xdebug php-memcached php-redis php-imagick php-tidy php-pspell php-recode php-snmp php-ssh2 php-gettext php-imap php-gmp php-ldap php-intl php-bz2 php-zip php-imap php-bcmath php-soap php-gmp php-memcached php-redis php-imagick
+apt -y install -y php php-fpm php-cli php-common php-dev php-gd php-json php-opcache php-readline php-mbstring php-mysql php-xml php-zip php-curl php-intl php-bz2 php-zip php-bcmath php-soap php-gmp php-pgsql php-sqlite3 php-xdebug php-memcached php-redis php-imagick php-tidy php-ssh2 php-imap php-gmp php-ldap php-intl php-bz2 php-zip php-bcmath php-soap php-gmp php-pgsql php-sqlite3 php-xdebug php-memcached php-redis php-imagick php-tidy php-imap php-gmp php-ldap php-intl php-bz2 php-zip php-imap php-bcmath php-soap php-gmp php-memcached php-redis php-imagick
 
 # get php version 
 PHP_VERSION=$(php -v | grep -o -P '(?<=PHP )[0-9]{1,2}\.[0-9]{1,2}')
@@ -133,9 +132,6 @@ sed -i 's/^;*max_input_vars.*/max_input_vars=2000/' /etc/php/$PHP_VERSION/fpm/ph
 # php-fpm restart
 service php$PHP_VERSION-fpm restart
 
-# restart php-fpm
-service php$PHP_VERSION-fpm restart
-
 # installing wp-cli
 curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
 chmod +x wp-cli.phar
@@ -149,7 +145,7 @@ mv composer.phar /usr/local/bin/composer
 ln -s /usr/local/bin/composer /usr/bin/composer
 
 # install mariadb latest version
-apt-get install -y mariadb-server mariadb-client
+apt install -y mariadb-server mariadb-client
 
 # mysql secure installation
 mysql_secure_installation
@@ -172,7 +168,7 @@ sed -i 's/^;*maxmemory-policy.*/maxmemory-policy=volatile-lru/' /etc/redis/redis
 sed -i 's/^;*maxmemory-samples.*/maxmemory-samples=3/' /etc/redis/redis.conf
 
 # install redis-tools
-apt-get install -y redis-tools
+apt install -y redis-tools
 
 # redis change supervised setting
 sed -i 's/^supervised.*/supervised systemd/' /etc/redis/redis.conf
@@ -189,17 +185,17 @@ sed -i 's/^;*vm.overcommit_memory.*/vm.overcommit_memory=1/' /etc/sysctl.conf
 sysctl -p
 
 # mysql performance tuning
-mysql -e "SET GLOBAL innodb_buffer_pool_size=256M;"
-mysql -e "SET GLOBAL innodb_log_file_size=256M;"
-mysql -e "SET GLOBAL innodb_flush_log_at_trx_commit=2;"
-mysql -e "SET GLOBAL innodb_io_capacity=200;"
-mysql -e "SET GLOBAL innodb_read_io_threads=4;"
-mysql -e "SET GLOBAL innodb_write_io_threads=4;"
-mysql -e "SET GLOBAL innodb_thread_concurrency=16;"
-mysql -e "SET GLOBAL innodb_flush_log_at_trx_commit=2;"
-mysql -e "SET GLOBAL innodb_max_dirty_pages_pct=90;"
-mysql -e "SET GLOBAL innodb_file_per_table=1;"
-mysql -e "SET GLOBAL innodb_open_files=2000;"
+# mysql -e "SET GLOBAL innodb_buffer_pool_size=256M;"
+# mysql -e "SET GLOBAL innodb_log_file_size=256M;"
+# mysql -e "SET GLOBAL innodb_flush_log_at_trx_commit=2;"
+# mysql -e "SET GLOBAL innodb_io_capacity=200;"
+# mysql -e "SET GLOBAL innodb_read_io_threads=4;"
+# mysql -e "SET GLOBAL innodb_write_io_threads=4;"
+# mysql -e "SET GLOBAL innodb_thread_concurrency=16;"
+# mysql -e "SET GLOBAL innodb_flush_log_at_trx_commit=2;"
+# mysql -e "SET GLOBAL innodb_max_dirty_pages_pct=90;"
+# mysql -e "SET GLOBAL innodb_file_per_table=1;"
+# mysql -e "SET GLOBAL innodb_open_files=2000;"
 
 # generate cron job for certbot
 # cat > /etc/cron.d/certbot << EOF
